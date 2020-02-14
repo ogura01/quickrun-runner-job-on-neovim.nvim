@@ -56,16 +56,18 @@ function! s:runner.stop_and_flush() dict
   if has_key(self, '_job')
     try
       call jobstop(self._job)
-    catch => err
-      echo err
+    catch
+      echom string(v:exception)
     endtry
     unlet! self._job
   endif
   if has_key(self, '_timer')
     try
+      echom "timer_stop begin: " . string(self._job)
       call timer_stop(self._timer)
-    catch => err
-      echo err
+      echom "timer_stop end: " . string(self._job)
+    catch
+      echom string(v:exception)
     endtry
     unlet! self._timer
   endif
@@ -89,8 +91,8 @@ function! s:runner.on_exit(job_id, data, event) dict
   if has_key(self, '_key')
     try
       call quickrun#session(self._key, 'finish', a:data)
-    catch => err
-      echo err
+    catch
+      echom string(v:exception)
     endtry
     unlet! self._key
   endif
@@ -107,4 +109,3 @@ try
   call quickrun#module#register(deepcopy(s:runner))
 catch
 endtry
-
